@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloodLink - Save Life</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #0b0f19; color: #ffffff; min-height: 100vh; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 8%; background: rgba(18, 24, 38, 0.9); border-bottom: 1px solid rgba(255, 0, 0, 0.2); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 24px; font-weight: 700; color: #ff3333; letter-spacing: 1px; }
+        nav a { color: #f1f5f9; text-decoration: none; margin-left: 25px; font-weight: 500; transition: 0.3s; }
+        nav a:hover, nav a.active { color: #ff3333; }
+        .btn-nav { background: linear-gradient(135deg, #cc0000, #ff3333); padding: 10px 20px; border-radius: 6px; color: white !important; }
+        .hero { text-align: center; padding: 90px 20px; background: radial-gradient(circle at center, #260505 0%, #0b0f19 70%); }
+        .hero h1 { font-size: 48px; margin-bottom: 20px; color: #ffffff; }
+        .hero h1 span { color: #ff3333; }
+        .hero p { font-size: 18px; color: #94a3b8; max-width: 600px; margin: 0 auto 30px auto; }
+        .hero-btns a { display: inline-block; background: #ff3333; color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: 600; margin: 0 10px; box-shadow: 0 4px 15px rgba(255, 51, 51, 0.4); transition: 0.3s; }
+        .hero-btns a:hover { background: #cc0000; transform: translateY(-2px); }
+        .donors-section { padding: 60px 8%; background: #0f172a; }
+        .section-title { text-align: center; margin-bottom: 40px; font-size: 30px; color: #ff3333; }
+        .donor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .donor-card { background: #1e293b; border: 1px solid rgba(255, 51, 51, 0.2); padding: 20px; border-radius: 10px; text-align: left; transition: 0.3s; }
+        .donor-card:hover { border-color: #ff3333; transform: translateY(-5px); }
+        .donor-card h3 { color: #ff3333; margin-bottom: 8px; }
+        .donor-card p { color: #cbd5e1; font-size: 14px; margin: 4px 0; }
+        .no-donor { text-align: center; color: #64748b; font-size: 16px; }
+        footer { text-align: center; padding: 20px; background: #0b0f19; color: #64748b; border-top: 1px solid #1e293b; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">BloodLink🩸</div>
+        <nav>
+            <a href="index.html" class="active">Home</a>
+            <a href="find_a_donor.html">Find a Donor</a>
+            <a href="blood_requests.html" style="color: #ff3333; font-weight: 600;">Blood Requests</a>
+            <a href="donor_register.html">Register as a Donor</a>
+            <a href="login.html" class="btn-nav">Login</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Donate Blood, <span>Save Lives</span></h1>
+        <p>Your small contribution can give someone a second chance at life. Join our community of lifesavers today.</p>
+        <div class="hero-btns">
+            <a href="donor_register.html">Become a Donor</a>
+            <a href="find_a_donor.html" style="background: transparent; border: 2px solid #ff3333;">Find a Donor</a>
+            <a href="request_blood.html" style="background: #eab308; color: #000;">Request Blood</a>
+        </div>
+    </section>
+
+    <section class="donors-section">
+        <h2 class="section-title">Available Active Donors</h2>
+        <div id="donorContainer" class="donor-grid">
+            <p class="no-donor"></p>
+        </div>
+    </section>
+
+    <div style="text-align: center; padding: 40px 20px; background: #121826; border-top: 1px solid #1e293b; margin-top: 50px;">
+        <h3 style="color: #fff; margin-bottom: 15px; font-size: 22px;">Be a Part of Our Lifesaving Network</h3>
+        <p style="color: #94a3b8; margin-bottom: 25px; font-size: 14px;">Connect with other donors and volunteers in our community.</p>
+        <a href="https://www.facebook.com/share/g/1DrcsbUPP5/" target="_blank" style="
+            display: inline-block; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #ffffff;
+            padding: 14px 32px; font-size: 16px; font-weight: 600; text-decoration: none; border-radius: 50px;
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.6); border: 2px solid #60a5fa; transition: all 0.3s ease;
+            animation: pulseGlow 2s infinite;
+        ">
+            💙 Join Our Facebook Community Group
+        </a>
+    </div>
+
+    <style>
+    @keyframes pulseGlow {
+        0% { box-shadow: 0 0 15px rgba(37, 99, 235, 0.6); transform: scale(1); }
+        50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.9); transform: scale(1.03); }
+        100% { box-shadow: 0 0 15px rgba(37, 99, 235, 0.6); transform: scale(1); }
+    }
+    </style>
+
+    <footer>
+        <p>&copy; 2026 BloodLink. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        async function loadAvailableDonors() {
+            try {
+                const response = await fetch('/api/donors');
+                const donors = await response.json();
+                const container = document.getElementById('donorContainer');
+                
+                if (donors.length > 0) {
+                    container.innerHTML = "";
+                    donors.forEach(donor => {
+                        container.innerHTML += `
+                            <div class="donor-card">
+                                <h3>${donor.fullname}</h3>
+                                <p><strong>Blood Group:</strong> <span style="color:#ff3333; font-weight:bold;">${donor.bloodgroup}</span></p>
+                                <p><strong>Location:</strong> ${donor.location}</p>
+                                <p><strong>Phone:</strong> ${donor.phone}</p>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (err) {
+                console.log("Error loading donors: ", err);
+            }
+        }
+
+        loadAvailableDonors();
+    </script>
+</body>
+</html>
