@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - BloodLink LifeShare Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #0b0f19; color: #fff; min-height: 100vh; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 8%; background: rgba(18, 24, 38, 0.95); border-bottom: 1px solid rgba(239, 68, 68, 0.3); position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px); }
+        .logo { font-size: 24px; font-weight: 700; color: #ef4444; }
+        nav { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        nav a { color: #f1f5f9; text-decoration: none; font-weight: 500; transition: 0.3s; font-size: 15px; }
+        nav a:hover, nav a.active { color: #ef4444; }
+        .logout-btn { background: #ef4444; border: none; color: white; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .container { padding: 40px 8%; max-width: 1400px; margin: 0 auto; }
+        .hero { text-align: center; padding: 50px 20px; background: linear-gradient(rgba(11, 15, 25, 0.85), rgba(11, 15, 25, 0.92)), url('https://images.unsplash.com/photo-1615461066841-6116e61058f4?auto=format&fit=crop&w=1600&q=80') no-repeat center center/cover; border-radius: 16px; border: 1px solid rgba(239, 68, 68, 0.3); margin-bottom: 30px; }
+        .hero h1 { font-size: 38px; margin-bottom: 15px; }
+        .hero h1 span { color: #ef4444; }
+        .hero p { font-size: 15px; color: #94a3b8; max-width: 650px; margin: 0 auto 20px auto; }
+        .hero-btns { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .hero-btns a { background: #ef4444; color: white; padding: 10px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; }
+        
+        .fb-banner { background: linear-gradient(135deg, #1877f2, #0c5dc7); padding: 18px 25px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-top: 30px; box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3); flex-wrap: wrap; gap: 15px; }
+        .fb-banner h3 { font-size: 18px; color: #fff; display: flex; align-items: center; gap: 10px; }
+        .fb-btn { background: #fff; color: #1877f2; padding: 8px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: 0.2s; }
+        .fb-btn:hover { background: #f0f2f5; }
+
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .metric-card { background: #121826; border: 1px solid #1e293b; border-left: 4px solid #ef4444; padding: 20px; border-radius: 12px; }
+        .metric-card h3 { font-size: 14px; color: #94a3b8; margin-bottom: 8px; }
+        .metric-card .value { font-size: 28px; font-weight: 700; color: #fff; }
+
+        .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 30px; }
+        @media(max-width: 968px) { .analytics-grid { grid-template-columns: 1fr; } }
+        .panel { background: #121826; border: 1px solid #1e293b; border-radius: 12px; padding: 22px; }
+        .map-container { width: 100%; height: 260px; border-radius: 8px; overflow: hidden; border: 1px solid #334155; }
+        .map-container iframe { width: 100%; height: 100%; border: 0; filter: invert(90%) hue-rotate(180deg); }
+
+        .section-title { font-size: 22px; color: #ef4444; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .section-title a { font-size: 14px; color: #38bdf8; text-decoration: none; }
+        .section-title a:hover { text-decoration: underline; }
+
+        .emergency-list-container { display: flex; flex-direction: column; gap: 12px; }
+        .emergency-row-item { background: #121826; border: 1px solid #1e293b; border-left: 4px solid #ef4444; padding: 16px 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; gap: 15px; }
+        .emergency-row-item:hover { background: #1a2333; border-color: #ef4444; transform: translateY(-2px); }
+        .emergency-info { display: flex; align-items: center; gap: 15px; }
+        .blood-badge { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); font-weight: 700; font-size: 16px; padding: 10px 14px; border-radius: 8px; text-align: center; min-width: 60px; }
+        .emergency-details h5 { font-size: 16px; color: #fff; margin-bottom: 4px; }
+        .emergency-details p { font-size: 13px; color: #94a3b8; }
+        .badge-pending { background: rgba(234, 179, 8, 0.15); color: #eab308; padding: 4px 10px; font-size: 12px; border-radius: 6px; border: 1px solid rgba(234, 179, 8, 0.3); white-space: nowrap; font-weight: 500; }
+        .no-donor { text-align: center; color: #64748b; padding: 20px; background: #121826; border-radius: 10px; border: 1px solid #1e293b; }
+
+        footer { text-align: center; padding: 30px; background: #0b0f19; color: #64748b; border-top: 1px solid #1e293b; margin-top: 40px; }
+    </style>
+</head>
+<body>
+    <script>
+        const loggedUser = JSON.parse(localStorage.getItem('loggedDonor'));
+        if (!loggedUser) {
+            alert("Doya kore prothome login korun!");
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <header>
+        <div class="logo">🩸 BloodLink </div>
+        <nav>
+            <a href="user_home.html" class="active">Home</a>
+            <a href="find_a_donor.html">Find a Donor</a>
+            <a href="blood_requests.html">Blood Requests</a>
+            <a href="request_blood.html">Request Blood</a>
+            <a href="dashboard.html">Dashboard</a>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section class="hero">
+            <h1 id="welcomeTitle">Donate Blood, <span>Save Lives</span></h1>
+            <p>Advanced medical blood inventory and donor management dashboard.</p>
+            <div class="hero-btns">
+                <a href="request_blood.html">Request Blood Now</a>
+            </div>
+        </section>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <h3>Total Donors</h3>
+                <div class="value" id="totalDonors">--</div>
+            </div>
+            <div class="metric-card">
+                <h3>Active Requests</h3>
+                <div class="value" id="activeRequests" style="color: #ef4444;">--</div>
+            </div>
+            <div class="metric-card">
+                <h3>Successful Donations</h3>
+                <div class="value" id="successfulDonations" style="color: #22c55e;">0</div>
+            </div>
+        </div>
+
+        <div class="analytics-grid">
+            <div class="panel">
+                <h3 style="color:#ef4444; margin-bottom:15px;">🗺️ Active Donor Location</h3>
+                <div class="map-container">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d116833.83187880053!2d90.3372880721245!3d23.780975728343717!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c7b8c3d97f5f%3A0x2d89a7fb3ac5e01!2sDhaka%2C%20Bangladesh!5e0!3m2!1sen!2sbd!4v1650000000000!5m2!1sen!2sbd" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+            <div class="panel">
+                <h3 style="color:#ef4444; margin-bottom:15px;">📊 Inventory Analytics</h3>
+                <div style="height: 220px;"><canvas id="bloodChart"></canvas></div>
+            </div>
+        </div>
+
+        <section>
+            <div class="section-title">
+                <span>⚡ Recent Emergency Blood Requests</span>
+                <a href="blood_requests.html">View All Requests →</a>
+            </div>
+            <div id="emergencyRequestsContainer">
+                <p class="no-donor">Loading emergency requests...</p>
+            </div>
+        </section>
+
+        <div class="fb-banner">
+            <h3>🌐 Join Our Community Support Facebook Group</h3>
+            <a href="https://www.facebook.com/share/g/1HARkX3mba/" target="_blank" class="fb-btn">Join Facebook Group</a>
+        </div>
+    </div>
+
+    <footer><p>© 2026 BloodLink LifeShare System</p></footer>
+
+    <script>
+        if (loggedUser && loggedUser.fullname) {
+            document.getElementById('welcomeTitle').innerHTML = `Welcome Back, <span style="color: #ef4444;">${loggedUser.fullname}</span>`;
+        }
+
+        const ctx = document.getElementById('bloodChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: { labels: ['A+', 'B+', 'O+', 'AB+'], datasets: [{ data: [35, 45, 50, 20], backgroundColor: '#ef4444', borderRadius: 6 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+
+        async function loadDashboardData() {
+            try {
+                const resDonors = await fetch('/api/donors');
+                const donors = await resDonors.json();
+                document.getElementById('totalDonors').innerText = donors.length;
+
+                const resReqs = await fetch('/api/blood-requests');
+                const reqs = await resReqs.json();
+                document.getElementById('activeRequests').innerText = reqs.length;
+                let successfulCount = reqs.filter(r => r.status === 'Fulfilled' || (r.bagsCollected && r.bagsCollected >= r.bagsNeeded)).length;
+                document.getElementById('successfulDonations').innerText = successfulCount;
+
+                // Render Emergency Requests List with Click to Highlight Feature
+                const emergencyContainer = document.getElementById('emergencyRequestsContainer');
+                if (reqs.length > 0) {
+                    emergencyContainer.innerHTML = `<div class="emergency-list-container">`;
+                    reqs.slice(0, 4).forEach(req => {
+                        emergencyContainer.innerHTML += `
+                            <div class="emergency-row-item" onclick="window.location.href='blood_requests.html?highlight=${req._id}'">
+                                <div class="emergency-info">
+                                    <div class="blood-badge">${req.bloodgroup}</div>
+                                    <div class="emergency-details">
+                                        <h5>${req.hospital} (${req.department || 'General'})</h5>
+                                        <p>📍 ${req.location} &nbsp;|&nbsp; 📞 ${req.phone} &nbsp;|&nbsp; Needed: <strong>${req.bagsNeeded} Bags</strong> (Collected: <span style="color:#22c55e;">${req.bagsCollected || 0}</span>)</p>
+                                    </div>
+                                </div>
+                                <span class="badge-pending">View Details</span>
+                            </div>
+                        `;
+                    });
+                    emergencyContainer.innerHTML += `</div>`;
+                } else {
+                    emergencyContainer.innerHTML = "<p class='no-donor'>No emergency requests at the moment.</p>";
+                }
+
+            } catch (err) {
+                console.log("Error loading dashboard data:", err);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('loggedDonor');
+            window.location.href = 'login.html';
+        }
+
+        loadDashboardData();
+    </script>
+</body>
+</html>
